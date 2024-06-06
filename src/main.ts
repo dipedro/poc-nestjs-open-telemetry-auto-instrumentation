@@ -1,12 +1,15 @@
+import { otelSDK } from './registerInstrumentation';
+otelSDK.start();
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { otelSDK } from './registerInstrumentation';
+import { HttpFilterException } from './global';
 
-async function bootstrap() {
-  // Start SDK before nestjs factory create
-  otelSDK.start();
-  
+async function bootstrap() { 
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+
+  // Add global exception filter to handle all exceptions and send data to opentelemetry
+  app.useGlobalFilters(new HttpFilterException());
+
+  await app.listen(process.env.PORT);
 }
 bootstrap();

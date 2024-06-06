@@ -1,0 +1,49 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+        cors:
+          allowed_origins:
+            - "http://*"
+            - "https://*"
+
+exporters:
+  debug:
+  otlp:
+    endpoint: "jaeger:4317"
+    tls:
+      insecure: true
+  # otlphttp/trace:
+  #   endpoint: "https://otel.baselime.io/v1/traces"
+  #   headers:
+  #     x-api-key: ""
+  # otlphttp/metric:
+  #   endpoint: "https://otel.baselime.io/v1/metrics"
+  #   headers:
+  #     x-api-key: ""
+  # otlphttp/log:
+  #   endpoint: "https://otel.baselime.io/v1/logs"
+  #   headers:
+  #     x-api-key: ""
+
+processors:
+  batch:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
+      #exporters: [otlp, otlphttp/trace]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
+      #exporters: [otlp, otlphttp/metric]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
+      #exporters: [otlp, otlphttp/log]

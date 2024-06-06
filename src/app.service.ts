@@ -7,6 +7,6 @@ export class AppService {
   }
 
   sayHello(): string {
-    return 'Hello World!';
+    throw new Error("Teste de erro");
   }
 }
